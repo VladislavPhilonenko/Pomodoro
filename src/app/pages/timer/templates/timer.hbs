@@ -1,0 +1,28 @@
+<h1 class="title">{{this.title}}</h1>
+<section class="timer">
+  <p class="subtitle">{{this.description}}</p>
+  <ul class="tomatos">
+    <li class="tomatos__elem"><img class="tomatos__picture" src="/empty-tomato.svg" alt="tomato"></li>
+    <li class="tomatos__elem"><img class="tomatos__picture" src="/empty-tomato.svg" alt="tomato"></li>
+    <li class="tomatos__elem"><img class="tomatos__picture" src="/empty-tomato.svg" alt="tomato"></li>
+    <li class="tomatos__elem"><img class="tomatos__picture" src="/empty-tomato.svg" alt="tomato"></li>
+    <li class="tomatos__elem"><img class="tomatos__picture" src="/empty-tomato.svg" alt="tomato"></li>
+    <li class="add-new-tomato icon-add invisible"></li>
+  </ul>
+  <div class="timer__inner-content timer-{{category}}">
+    <div class="time-line">
+      <div class="hidden-timer hidden"></div>
+      <div class="visible-timer hidden"></div>
+      <div class="phase"></div>
+      <div class="timer__minutes"></div>
+      <div class="timer__message">Let's do it!</div>
+    </div>
+  </div>
+  <a class="icon-arrow-left back-link" href="#task-list" data-tooltip="Go to Global List"></a>
+  <a class="icon-arrow-right next-link invisible" href="#reports" data-tooltip="Go to Reports"></a>
+  <button class="btn btn-success start-timer" type="button">Start</button>
+  <button class="btn btn-remove fail-pomodora invisible" type="button">Fail Pomodora</button>
+  <button class="btn btn-success finish-pomodora invisible" type="button">Finish Pomodora</button>
+  <button class="btn btn-success start-pomodora invisible" type="button">Start Pomodora</button>
+  <button class="btn btn-primary finish-task invisible" type="button">Finish Task</button>
+</section>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/reports/mvc/reports-view.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/reports/mvc/reports-view.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import eventbus     from '../../../eventbus';
+import Event        from '../../../observer';
+import reportsTemp  from '../templates/reports.hbs';
+
+/**
+ * represents reports component
+ * @namespace ReportsView
+ */
+export default class View {
+  /**
+   * ReportsView constructor
+   * @constructs ReportsView
+   * @param {object} model - instance of ReportsModel
+   * @memberOf ReportsView
+   */
+  constructor(model) {
+    this.model = model;
+    this.renderDailyChart = new Event();
+    this.renderWeekChart  = new Event();
+    this.renderMonthChart = new Event();
+    this.model.updateData.subscribe(this.render, this);
+    this.isPomodoros = false;
+  }
+
+  /**
+   * adds tooltips
+   * @memberOf ReportsView
+   */
+  addTooltips() {
+    $('.back-link').tooltips();
+  }
+
+  /**
+   * renders reports page
+   * @memberOf ReportsView
+   */
+  render() {
+    const mainContent = document.getElementsByClassName('main-content')[0];
+
+    eventbus.dispatch('changeHeaderForReports');
+    this.isPomodoros = false;
+
+    mainContent.innerHTML = reportsTemp();
+    this.renderDailyChart.notifyObservers(this.isPomodoros);
+    this.assignEventListener();
+    this.addTooltips();
+  }
+
+  /**
+   * method for assigning events
+   * @memberOf ReportsView
+   */
+  assignEventListener() {
+    const dateTabsBlock = document.getElementsByClassName('tabs-date')[0],
+          typeTabsBlock = document.getElementsByClassName('tabs-type')[0],
+          dateTabs      = dateTabsBlock.children,
+          typeTabs      = typeTabsBlock.children;
+
+    dateTabs[0].addEventListener('click', () => {
+      this.renderDailyChart.notifyObservers(this.isPomodoros);
+      this.changeActiveStatus(0, dateTabsBlock);
+    });
+
+    dateTabs[1].addEventListener('click', () => {
+      this.renderWeekChart.notifyObservers(this.isPomodoros);
+      this.changeActiveStatus(1, dateTabsBlock);
+    });
+
+    dateTabs[2].addEventListener('click', () => {
+      this.renderMonthChart.notifyObservers(this.isPomodoros);
+      this.changeActiveStatus(2, dateTabsBlock);
+    });
+
+    typeTabs[0].addEventListener('click', () => {
+      this.isPomodoros = true;
+      this.renderCurrentDateChart();
+      this.changeActiveStatus(0, typeTabsBlock);
+    });
+
+    typeTabs[1].addEventListener('click', () => {
+      this.isPomodoros = false;
+      this.renderCurrentDateChart();
+      this.changeActiveStatus(1, typeTabsBlock);
+    });
+  }
+
+  /**
+   * method that chooses what type of charts should be rendered
+   * @memberOf ReportsView
+   */
+  renderCurrentDateChart() {
+    const dateTabs = document.getElementsByClassName('tabs-date')[0].children;
+    let index = 0;
+
+    Array.from(dateTabs).forEach((elem, i) => {
+      if (elem.classList.contains('tabs__active')) index = i;
+    });
+
+    switch (index) {
+      case 0:
+        this.renderDailyChart.notifyObservers(this.isPomodoros);
+        break;
+      case 1:
+        this.renderWeekChart.notifyObservers(this.isPomodoros);
+        break;
+      case 2:
+        this.renderMonthChart.notifyObservers(this.isPomodoros);
+        break;
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * modifies tabs status
+   * @memberOf ReportsView
+   */
+  changeActiveStatus(index, currentTabs) {
+    Array.from(currentTabs.children).forEach((elem) => {
+      elem.classList.remove('tabs__active');
+    });
+
+    currentTabs.children[index].classList.add('tabs__active');
+  }
+}
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Event.Event.html">Event</a></li><li><a href="EventBus.EventBus.html">EventBus</a></li><li><a href="Firebase.Firebase.html">Firebase</a></li><li><a href="Header.Header.html">Header</a></li><li><a href="ModalController.ModalController.html">ModalController</a></li><li><a href="ModalView.ModalView.html">ModalView</a></li><li><a href="Notification.Notification.html">Notification</a></li><li><a href="ReportsController.ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.ReportsView.html">ReportsView</a></li><li><a href="Router.Router.html">Router</a></li><li><a href="SettingsController.SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.SettingsView.html">SettingsView</a></li><li><a href="TaskListController.TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.TaskListView.html">TaskListView</a></li><li><a href="TaskModel.TaskModel.html">TaskModel</a></li><li><a href="TimerController.TimerController.html">TimerController</a></li><li><a href="TimerModel.TimerModel.html">TimerModel</a></li><li><a href="TimerView.TimerView.html">TimerView</a></li></ul><h3>Namespaces</h3><ul><li><a href="Event.html">Event</a></li><li><a href="EventBus.html">EventBus</a></li><li><a href="Firebase.html">Firebase</a></li><li><a href="Header.html">Header</a></li><li><a href="ModalController.html">ModalController</a></li><li><a href="ModalView.html">ModalView</a></li><li><a href="Notification.html">Notification</a></li><li><a href="ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.html">ReportsView</a></li><li><a href="Router.html">Router</a></li><li><a href="SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.html">SettingsView</a></li><li><a href="TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.html">TaskListView</a></li><li><a href="TaskModel.html">TaskModel</a></li><li><a href="TimerController.html">TimerController</a></li><li><a href="TimerModel.html">TimerModel</a></li><li><a href="TimerView.html">TimerView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 15 2018 23:31:21 GMT+0200 (FLE Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

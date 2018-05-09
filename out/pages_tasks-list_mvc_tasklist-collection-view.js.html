@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/tasks-list/mvc/tasklist-collection-view.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/tasks-list/mvc/tasklist-collection-view.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import eventbus             from '../../../eventbus';
+import Event                from '../../../observer';
+import task                 from '../templates/task.hbs';
+import taskListTemp         from '../templates/task-list.hbs';
+import firstEnterTemp       from '../templates/first-entrance.hbs';
+import globalTasksTemp      from '../templates/global-tasks.hbs';
+import doneTasksTemp        from '../templates/tasks-done.hbs';
+import emptyDailyTasks      from '../templates/empty-daily-tasks-zone.hbs';
+import doneAllTasks         from '../templates/done-all-tasks.hbs';
+import addFirstTask         from '../templates/addFirstTask.hbs';
+import emptyGlobalTasksTemp from '../templates/empty-global-list.hbs';
+import '../../../tooltips';
+
+/**
+ * represents task list component
+ * @namespace TaskListView
+ */
+export default class View {
+  /**
+   * TaskListView constructor
+   * @constructs TaskListView
+   * @param {object} model - instance of TaskLisModel
+   * @memberOf TaskListView
+   */
+  constructor(model) {
+    eventbus.registerEventHandler('onRemoveMode',  this.onRemoveMode.bind(this));
+    eventbus.registerEventHandler('offRemoveMode', this.offRemoveMode.bind(this));
+    eventbus.registerEventHandler('render',        this.render.bind(this));
+
+    this.model           = model;
+    this.toDoPage        = true;
+    this.editTaskStatus  = new Event();
+    this.registerNewUser = new Event();
+  }
+
+  /**
+   * adds tooltips
+   * @memberOf TaskListView
+   */
+  addTooltips() {
+    $('.link-to-global-tasks').tooltips();
+    $('.icon-tomato').tooltips();
+    $('.icon-edit').tooltips();
+    $('.add-task-btn').tooltips();
+    $('.icon-arrows-up').tooltips();
+  }
+
+  /**
+   * renders task list page
+   * @memberOf TaskListView
+   */
+  render() {
+    if(!sessionStorage.length) {
+      this.renderFirstEntrancePage();
+    } else {
+      this.renderDefaultPage();
+    }
+  }
+
+  /**
+   * renders first entrance  page
+   * @memberOf TaskListView
+   */
+  renderFirstEntrancePage() {
+    const mainContent = document.getElementsByClassName('main-content')[0];
+
+    mainContent.innerHTML = firstEnterTemp();
+
+    const taskListLink = document.getElementsByClassName('btn-primary')[0],
+          addTaskBtn   = document.getElementsByClassName('add-task-btn')[0];
+
+    addTaskBtn.addEventListener('click', this.addTask);
+    taskListLink.addEventListener('click', this.render.bind(this));
+
+    this.registerNewUser.notifyObservers();
+  }
+
+  /**
+   * renders default page
+   * @memberOf TaskListView
+   */
+  renderDefaultPage() {
+    const mainContent     = document.getElementsByClassName('main-content')[0],
+          data            = this.model.getTasks(),
+          globalTasksData = data[0],
+          dailyTasksData  = data[1],
+          doneTasksData   = data[2];
+
+
+    if (!dailyTasksData &amp;&amp; !globalTasksData &amp;&amp; !doneTasksData) {
+      this.renderCreateFirstTaskPage();
+
+      return null;
+    } else if (!dailyTasksData &amp;&amp; !globalTasksData &amp;&amp; doneTasksData) {
+      mainContent.innerHTML = doneAllTasks();
+
+      const addTaskBtn = document.getElementsByClassName('add-task-btn')[0];
+
+      addTaskBtn.addEventListener('click', this.addTask);
+
+      return null;
+    } else {
+      mainContent.innerHTML = taskListTemp();
+    }
+
+    eventbus.dispatch('changeHeaderForTaskList');
+
+    const dailyTasksList  = document.getElementsByClassName('daily-list')[0],
+          globalTasksList = document.getElementsByClassName('global-list')[0],
+          globalTaskBtn   = document.getElementsByClassName('link-to-global-tasks')[0],
+          addTaskBtn      = document.getElementsByClassName('add-task-btn')[0],
+          toDoLink        = document.getElementsByClassName('status-tabs')[0],
+          priorityTabs    = document.getElementsByClassName('priority__tabs')[0];
+
+
+    if (this.toDoPage) {
+      toDoLink.children[0].classList.add('tabs__active');
+
+      if (dailyTasksData) {
+        dailyTasksList.innerHTML = task(dailyTasksData);
+      } else {
+        dailyTasksList.innerHTML = emptyDailyTasks();
+      }
+
+      if (globalTasksData) {
+        globalTasksList.innerHTML = globalTasksTemp(globalTasksData);
+      } else {
+        globalTasksList.innerHTML = emptyGlobalTasksTemp(globalTasksData);
+      }
+
+      this.addTooltips();
+
+      toDoLink.addEventListener('click', this.renderDailyOrDoneTasks.bind(this));
+      addTaskBtn.addEventListener('click', this.addTask);
+      globalTaskBtn.addEventListener('click', this.openGlobalTasks);
+      mainContent.addEventListener('click', this.editTask.bind(this));
+      mainContent.addEventListener('click', this.startTimer.bind(this));
+      priorityTabs.addEventListener('click', this. choosePriority.bind(this));
+    } else {
+      toDoLink.children[1].classList.add('tabs__active');
+      globalTaskBtn.classList.add('invisible');
+      dailyTasksList.innerHTML = doneTasksTemp(doneTasksData);
+
+      addTaskBtn.addEventListener('click', this.addTask);
+      toDoLink.addEventListener('click', this.renderDailyOrDoneTasks.bind(this));
+    }
+  }
+
+  /**
+   * renders create firs tast page
+   * @memberOf TaskListView
+   */
+  renderCreateFirstTaskPage() {
+    const mainContent = document.getElementsByClassName('main-content')[0];
+
+    mainContent.innerHTML = addFirstTask();
+
+    const addTaskBtn = document.getElementsByClassName('add-task-btn')[0];
+
+    addTaskBtn.addEventListener('click', this.addTask);
+  }
+
+  /**
+   * opens modal window
+   * @param {event} e
+   * @memberOf TaskListView
+   */
+  addTask(e) {
+    e.preventDefault();
+    eventbus.dispatch('renderModal');
+  }
+
+  /**
+   * opens global tasks
+   * @memberOf TaskListView
+   */
+  openGlobalTasks() {
+    const globalTaskBtn = document.getElementsByClassName('link-to-global-tasks')[0],
+          globalTasksList = document.getElementsByClassName('global-list')[0],
+          globalTaskBtnArrow = globalTaskBtn.getElementsByTagName('span')[0],
+          priorityTabs = document.getElementsByClassName('priority__tabs')[0];
+
+    if(globalTasksList.classList.contains('invisible')) {
+      priorityTabs.classList.toggle('invisible');
+      globalTasksList.classList.toggle('invisible');
+      globalTaskBtnArrow.classList.toggle('icon-global-list-arrow-down');
+      globalTaskBtnArrow.classList.toggle('icon-global-list-arrow-right');
+    } else {
+      priorityTabs.classList.toggle('invisible');
+      globalTasksList.classList.toggle('invisible');
+      globalTaskBtnArrow.classList.toggle('icon-global-list-arrow-down');
+      globalTaskBtnArrow.classList.toggle('icon-global-list-arrow-right');
+    }
+  }
+
+  /**
+   * gets task data from page
+   * @param {HTMLElement} target
+   * @memberOf TaskListView
+   * @return {object}
+   */
+  getTaskDataFromPage(target) {
+    return {
+      id: target.dataset.id,
+      title: target.children[2].children[0].textContent,
+      description: target.children[2].children[1].textContent,
+      category: target.classList[1].split('-')[1],
+      priority: target.classList[2].split('-')[1],
+      estimation: target.children[4].children[0].textContent
+    }
+  }
+
+  /**
+   * collects data for edit modal
+   * @param {event} e
+   * @memberOf TaskListView
+   */
+  editTask(e) {
+    const target = e.target,
+          dailyList = document.getElementsByClassName('daily-list')[0];
+
+    if (target.classList.contains('icon-edit')) {
+      const currentTask  = target.parentElement.parentElement,
+            currentDay   = currentTask.children[1].children[0].textContent,
+            currentMonth = currentTask.children[1].children[1].textContent,
+            currentYear  = currentTask.children[1].dataset.year,
+            data         = this.getTaskDataFromPage(currentTask),
+            options      = {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            };
+
+      if (!currentDay) {
+        data.deadline = new Date().toLocaleString("en-US", options);
+      } else {
+        data.deadline = `${currentMonth} ${currentDay}, ${currentYear}`;
+      }
+
+      data.isActive = currentTask.dataset.isActive === 'true';
+
+      eventbus.dispatch('renderModal', data);
+      e.stopImmediatePropagation();
+    } else if (target.classList.contains('icon-arrows-up')) {
+      const currentTask = target.parentElement.parentElement,
+            data = this.getTaskDataFromPage(currentTask),
+            MSINONEDAY  = 86399999,
+            currentDate = new Date(),
+            todayAtMidn = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+      data.isActive = true;
+      data.deadline = Date.parse(todayAtMidn) + MSINONEDAY;
+
+      if (dailyList.children &amp;&amp; dailyList.children.length >= 5) {
+        const notificationData = {
+          title: 'warning',
+          message: 'You can\'t add to daily tasks more than 5 tasks!'
+        };
+
+        eventbus.dispatch('renderNotification', notificationData);
+
+        return null;
+      }
+
+      this.editTaskStatus.notifyObservers(data);
+      e.stopImmediatePropagation();
+    }
+  }
+
+  /**
+   * starts timer, goes to the timer page
+   * @param {event} e
+   * @memberOf TaskListView
+   */
+  startTimer(e) {
+    const target = e.target;
+
+    if (target.classList.contains('priority-shapes')) {
+      const currentTask = target.parentElement,
+            data        = this.getTaskDataFromPage(currentTask);
+
+      data.isActive = currentTask.dataset.isActive === 'true';
+      eventbus.dispatch('setTaskData', data);
+      e.stopImmediatePropagation();
+    }
+  }
+
+  /**
+   * assigns tabs events
+   * @param {event} e
+   * @memberOf TaskListView
+   */
+  renderDailyOrDoneTasks(e) {
+    const target = e.target;
+
+    if(target.classList.contains('done-link')) {
+      this.toDoPage = false;
+      this.render();
+    } else if(target.classList.contains('todo-link')) {
+      this.toDoPage = true;
+      this.render();
+    }
+  }
+
+  /**
+   * assigns filter tabs events
+   * @param {event} e
+   * @memberOf TaskListView
+   */
+  choosePriority(e) {
+    const target       = e.target,
+          priorityTabs = Array.from(document.getElementsByClassName('priority__tabs')[0].children);
+
+    if (target.classList.contains('tabs__item')) {
+      const priority = target.dataset.priority;
+
+      priorityTabs.forEach(elem => {
+        elem.classList.remove('tabs__active');
+      });
+
+      target.classList.add('tabs__active');
+
+      switch (priority) {
+        case 'all':
+          this.priorityFilter();
+          break;
+        case 'urgent':
+          this.priorityFilter('urgent');
+          break;
+        case 'high':
+          this.priorityFilter('high');
+          break;
+        case 'middle':
+          this.priorityFilter('middle');
+          break;
+        case 'low':
+          this.priorityFilter('low');
+          break;
+        default:
+          return null;
+      }
+    }
+  }
+
+  /**
+   * filter method
+   * @param {string} priority
+   * @memberOf TaskListView
+   */
+  priorityFilter(priority) {
+    const taskLists = Array.from(document.getElementsByClassName('global'));
+
+    taskLists.forEach(elem => {
+      const tasks = Array.from(elem.children);
+
+      elem.parentElement.classList.remove('invisible');
+
+      tasks.forEach(elem => {
+        elem.classList.remove('invisible');
+
+        if (priority &amp;&amp; !elem.className.match(priority)) {
+          elem.classList.add('invisible');
+        }
+      });
+
+      if (tasks.every(checkForEmptiness)) {
+        elem.parentElement.classList.add('invisible');
+      }
+
+      /**
+       * checks for emptiness
+       * @param {HTMLElement} elem
+       * @memberOf TaskListView
+       * @return {boolean}
+       */
+      function checkForEmptiness(elem) {
+        return elem.classList.contains('invisible');
+      }
+    })
+  }
+
+  /**
+   * includes remove mode
+   * @memberOf TaskListView
+   */
+  onRemoveMode() {
+    const mainContent      = document.getElementsByClassName('main-content')[0],
+          tasks            = document.getElementsByClassName('task'),
+          dates            = document.getElementsByClassName('date'),
+          dailyList        = document.getElementsByClassName('daily-list')[0],
+          globalList       = document.getElementsByClassName('global-list')[0],
+          deleteBtns       = document.getElementsByClassName('delete-elem'),
+          deleteDailyBtns  = dailyList.getElementsByClassName('delete-elem'),
+          deleteGlobalBtns = globalList.getElementsByClassName('delete-elem'),
+          removeTabs       = document.getElementsByClassName('remove-tabs'),
+          dailyTabs        = document.getElementsByClassName('daily-tabs')[0],
+          globalTabs       = document.getElementsByClassName('tabs-global-tasks')[0];
+
+    for (let elem of removeTabs) {
+      elem.classList.remove('invisible');
+    }
+
+    for (let i = 0; i &lt; tasks.length; i++) {
+      tasks[i].classList.add('task-remove');
+      deleteBtns[i].classList.remove('invisible');
+      dates[i].classList.add('invisible');
+    }
+
+    mainContent.addEventListener('click', this.markTaskForRemove);
+    dailyTabs.addEventListener('click', this.markAllTasksForRemove.bind(null, deleteDailyBtns, dailyTabs));
+
+    if (globalTabs) {
+      globalTabs.addEventListener('click', this.markAllTasksForRemove.bind(null, deleteGlobalBtns, globalTabs));
+    }
+  }
+
+  /**
+   * marks task for removing
+   * @memberOf TaskListView
+   */
+  markTaskForRemove(e) {
+    const target = e.target;
+
+    if (target.classList.contains('delete-elem')) {
+      if (target.classList.contains('active__btn')) {
+        eventbus.dispatch('subRemoveTasks', target.parentElement.dataset.id);
+        target.classList.remove('active__btn');
+      } else {
+        eventbus.dispatch('addRemoveTasks', target.parentElement.dataset.id);
+        target.classList.add('active__btn');
+      }
+
+      e.stopImmediatePropagation();
+    }
+  }
+
+  /**
+   * marks all tasks for removing
+   * @memberOf TaskListView
+   */
+  markAllTasksForRemove(buttons, tabs, e) {
+    const target = e.target;
+
+    for (let elem of tabs.children) {
+      elem.classList.remove('tabs__active');
+    }
+
+    if (target.classList.contains('select')) {
+      target.classList.add('tabs__active');
+
+      for (let elem of buttons) {
+        if (!elem.classList.contains('active__btn')) {
+          elem.classList.add('active__btn');
+          eventbus.dispatch('addRemoveTasks', elem.parentElement.dataset.id);
+        }
+      }
+    } else if (target.classList.contains('deselect')) {
+      target.classList.add('tabs__active');
+
+      for (let elem of buttons) {
+        if (elem.classList.contains('active__btn')) {
+          elem.classList.remove('active__btn');
+          eventbus.dispatch('subRemoveTasks', elem.parentElement.dataset.id);
+        }
+      }
+    }
+  }
+
+  /**
+   * turns off the removing mode
+   * @memberOf TaskListView
+   */
+  offRemoveMode() {
+    const tasks      = document.getElementsByClassName('task'),
+          dates      = document.getElementsByClassName('date'),
+          deleteBtns = document.getElementsByClassName('delete-elem'),
+          removeTabs = document.getElementsByClassName('remove-tabs'),
+          dailyTabs  = document.getElementsByClassName('daily-tabs')[0],
+          globalTabs = document.getElementsByClassName('tabs-global-tasks')[0];
+
+    this.removedIdList = [];
+    this.toDoPage = true;
+    localStorage.removeItem('removedIdList');
+
+    if (dailyTabs) {
+      for (let elem of dailyTabs.children) {
+        elem.classList.remove('tabs__active');
+      }
+    }
+
+    if (globalTabs) {
+      for (let elem of globalTabs.children) {
+        elem.classList.remove('tabs__active');
+      }
+    }
+
+    for (let elem of removeTabs) {
+      elem.classList.add('invisible');
+    }
+
+    for (let i = 0; i &lt; tasks.length; i++) {
+      tasks[i].classList.remove('task-remove');
+      deleteBtns[i].classList.add('invisible');
+      deleteBtns[i].classList.remove('active__btn');
+      dates[i].classList.remove('invisible');
+    }
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Event.Event.html">Event</a></li><li><a href="EventBus.EventBus.html">EventBus</a></li><li><a href="Firebase.Firebase.html">Firebase</a></li><li><a href="Header.Header.html">Header</a></li><li><a href="ModalController.ModalController.html">ModalController</a></li><li><a href="ModalView.ModalView.html">ModalView</a></li><li><a href="Notification.Notification.html">Notification</a></li><li><a href="ReportsController.ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.ReportsView.html">ReportsView</a></li><li><a href="Router.Router.html">Router</a></li><li><a href="SettingsController.SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.SettingsView.html">SettingsView</a></li><li><a href="TaskListController.TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.TaskListView.html">TaskListView</a></li><li><a href="TaskModel.TaskModel.html">TaskModel</a></li><li><a href="TimerController.TimerController.html">TimerController</a></li><li><a href="TimerModel.TimerModel.html">TimerModel</a></li><li><a href="TimerView.TimerView.html">TimerView</a></li></ul><h3>Namespaces</h3><ul><li><a href="Event.html">Event</a></li><li><a href="EventBus.html">EventBus</a></li><li><a href="Firebase.html">Firebase</a></li><li><a href="Header.html">Header</a></li><li><a href="ModalController.html">ModalController</a></li><li><a href="ModalView.html">ModalView</a></li><li><a href="Notification.html">Notification</a></li><li><a href="ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.html">ReportsView</a></li><li><a href="Router.html">Router</a></li><li><a href="SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.html">SettingsView</a></li><li><a href="TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.html">TaskListView</a></li><li><a href="TaskModel.html">TaskModel</a></li><li><a href="TimerController.html">TimerController</a></li><li><a href="TimerModel.html">TimerModel</a></li><li><a href="TimerView.html">TimerView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 15 2018 23:31:21 GMT+0200 (FLE Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+body {
+  min-width: 600px;
+  background: @background-color;
+  font-family: @font-roboto-regular;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+//MAIN-CONTENT
+.main-content {
+  max-width: 1225px;
+  margin: 0 auto;
+  padding: 0 20px 58px;
+  text-align: center;
+
+  .title {
+    font: normal 1.75em @font-roboto-medium;
+    letter-spacing: 0.025em;
+    color: white;
+
+    .icon-add {
+      position: relative;
+      top: -2px;
+      left: 6px;
+      font-size: 0.57em;
+      color: inherit;
+      cursor: pointer;
+    }
+  }
+}
+
+//TABS
+.tabs {
+  display: flex;
+
+  .tabs__item {
+    position: relative;
+    margin-left: 18px;
+    font: normal 1em @font-ptsans;
+    color: #8da5b8;
+    cursor: pointer;
+
+    &:hover {
+      color: #82c7e0;
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: -9px;
+      width: 1px;
+      height: 12px;
+      background-color: #8da5b8;
+    }
+
+    &:first-child:before {
+      width: 0;
+    }
+  }
+
+  .tabs__active {
+    color: white;
+
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+//BUTTONS
+.btn {
+  display: inline-block;
+  min-width: 123px;
+  padding: 12px 25px;
+  margin: 0 7px 0 9px;
+  font: bold 1.12em/1 @font-ptsans;
+  color: white;
+  cursor: pointer;
+}
+
+//link to global tasks
+.link-to-global-tasks {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 26px;
+  padding: 0;
+  font: bold 1.25em @font-ptsans;
+  color: #8da5b8;
+  cursor: pointer;
+
+  &:hover {
+    color: #82c7e0;
+  }
+
+  .icon-global-list-arrow-right {
+    margin-left: 5px;
+    font-size: 0.58em;
+  }
+}
+
+//PRIORITY
+.priority {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  padding: 25px 0 6px 0;
+
+  .link-to-global-tasks {
+    margin-top: 0;
+
+    .icon-global-list-arrow-down {
+      margin-left: 5px;
+      font-size: 0.58em;
+    }
+  }
+}
+
+.priority_with-link {
+  justify-content: space-between;
+  padding-top: 18px;
+}
+
+//NEXT AND BACK LINKS
+.back-link,
+.next-link {
+  position: absolute;
+  top: 48%;
+  font-size: 2.46em;
+  color: #8da5b8;
+
+  &:hover {
+    color: #82c7e0;
+  }
+}
+
+.back-link {
+  left: 0;
+}
+
+.next-link {
+  right: 0;
+}
+
+
+//JS
+.invisible {
+  display: none !important;
+}
+
+//TOOLTIPS
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  min-width: 100px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .9);
+  text-align: center;
+  font: bold normal 0.9em @font-ptsans;
+  color: @background-color;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 15px;
+    margin-left: -5px;
+    border: 5px solid;
+    border-color: transparent transparent rgba(255, 255, 255, .8) transparent;
+  }
+}
+
+//COLOR MIXINS
+
+.loop();
+
+
+//MEDIA
+
+@media (max-width: 1279px) {
+  .main-content {
+    .title {
+      font-size: 1.9em;
+    }
+  }
+
+  .tabs {
+    .tabs__item {
+      margin-left: 27px;
+      margin-right: 3px;
+      font-size: 1.27em;
+
+      &:before {
+        top: 8px;
+        left: -15px;
+        height: 15px;
+      }
+    }
+  }
+
+  .link-to-global-tasks {
+    font-size: 1.5em;
+
+    .icon-global-list-arrow-right {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 0.4em;
+    }
+  }
+
+  .priority {
+    .link-to-global-tasks {
+      .icon-global-list-arrow-down {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 0.4em;
+      }
+    }
+  }
+
+  .back-link,
+  .next-link {
+    font-size: 3.65em;
+  }
+}
+
+@media (max-width: 992px) {
+  .back-link,
+  .next-link {
+    font-size: 3em;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    overflow-x: auto;
+  }
+
+  .main-content {
+    .title {
+      position: absolute;
+      top: 47px;
+      left: 32px;
+    }
+  }
+
+  .tabs {
+    .tabs__item {
+      margin-right: 7px;
+      font-size: 1.48em;
+
+      &:before {
+        left: -15px;
+        height: 15px;
+      }
+    }
+  }
+
+  .priority_with-link {
+    padding-top: 40px;
+  }
+
+  .btn {
+    min-width: 261px;
+    padding: 26px 25px;
+    font-size: 1.3em;
+  }
+}

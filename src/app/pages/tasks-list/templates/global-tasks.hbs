@@ -1,0 +1,35 @@
+<div class="select-tabs">
+    <ul class="tabs tabs-global-tasks remove-tabs invisible">
+        <li class="tabs__item select">Select All</li>
+        <li class="tabs__item deselect">Deselect All</li>
+    </ul>
+</div>
+
+{{#each this}}
+  <section class="global-tasks task-{{@key}} {{#unless this}}invisible{{/unless}}">
+      <div class="caption">
+          <h3 class="caption__title">{{@key}}</h3>
+      </div>
+      <ul class="tasks__list global">
+        {{#each this}}
+            <li class="task task-{{this.category}} task-{{this.priority}}" data-id="{{this.id}}" data-is-active="{{this.isActive}}">
+                <div class="delete-elem icon-trash invisible"></div>
+                <div class="date {{#unless this.notOverdue}}overdue{{/unless}}" data-year="{{this.deadlineYear}}">
+                    <h2 class="date__num">{{this.deadlineDay}}</h2>
+                    <h3 class="date__month">{{this.deadlineMonth}}</h3>
+                </div>
+                <div class="description">
+                    <h2 class="description__title">{{this.title}}</h2>
+                    <p class="description__subtitle">{{this.description}}</p>
+                </div>
+                <div class="edit-info">
+                    <button class="icon-arrows-up" type="button" data-tooltip="Add Task to Daily"></button>
+                    <button class="icon-edit" type="button" data-tooltip="Edit Task"></button>
+                </div>
+                <a class="priority-shapes icon-tomato" href="#timer" data-tooltip="Go to Timer"><span class="priority-shapes_number">{{this.estimation}}</span></a>
+            </li>
+        {{/each}}
+      </ul>
+  </section>
+{{/each}}
+

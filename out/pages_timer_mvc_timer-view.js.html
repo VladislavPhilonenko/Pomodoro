@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/timer/mvc/timer-view.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/timer/mvc/timer-view.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import eventbus  from '../../../eventbus';
+import Event     from '../../../observer';
+import timerTemp from '../templates/timer.hbs';
+
+/**
+ * represents timer component
+ * @namespace TimerView
+ */
+export default class View {
+  /**
+   * TimerView constructor
+   * @constructs TimerView
+   * @param {object} model - instance of TimerModel
+   * @memberOf TimerView
+   */
+  constructor(model) {
+    this.model            = model;
+    this.timeId           = null;
+    this.currentIteration = this.getCurrentIteration() || 0;
+    this.setIteration     = new Event();
+  }
+
+  /**
+   * gets current iteration from local storage
+   * @memberOf TimerView
+   * @return {number} - current iteration
+   */
+  getCurrentIteration() {
+    return JSON.parse(localStorage.getItem('currentIteration'));
+  }
+
+  /**
+   * gets current iteration from local storage
+   * @memberOf TimerView
+   * @return {Array} newData
+   */
+  getSS() {
+    const newData = [];
+
+    for (let i = 0; i &lt; sessionStorage.length; i++) {
+      newData.push( JSON.parse(sessionStorage.getItem(`obj${i}`)) );
+    }
+
+    return newData;
+  }
+
+  /**
+   * adds tooltips
+   * @memberOf TimerView
+   */
+  addTooltips() {
+    $('.back-link').tooltips();
+    $('.next-link').tooltips();
+  }
+
+  /**
+   * renders timer page
+   * @memberOf TimerView
+   */
+  render() {
+    const mainContent = document.getElementsByClassName('main-content')[0],
+          data        = this.model.getTaskData();
+
+    eventbus.dispatch('changeHeaderForTimer');
+
+    mainContent.innerHTML = timerTemp(data);
+
+    this.addTooltips();
+
+    const startTimerBtn = document.getElementsByClassName('start-timer')[0];
+
+    startTimerBtn.addEventListener('click', this.startTimer.bind(this), {once: true});
+
+    this.renderTomatos(data);
+    this.assignEventListener(data);
+  }
+
+  /**
+   * method for assigning events
+   * @param {object} data
+   * @memberOf TimerView
+   */
+  assignEventListener(data) {
+    const visibleTimer   = document.getElementsByClassName('visible-timer')[0],
+          failPomodora   = document.getElementsByClassName('fail-pomodora')[0],
+          finishPomodora = document.getElementsByClassName('finish-pomodora')[0],
+          startPomodora  = document.getElementsByClassName('start-pomodora')[0],
+          finishTask     = document.getElementsByClassName('finish-task')[0],
+          addBtn         = document.getElementsByClassName('add-new-tomato')[0];
+
+    visibleTimer.addEventListener('animationstart', this.listener.bind(this));
+    visibleTimer.addEventListener('animationend', this.listener.bind(this));
+    failPomodora.addEventListener('click', this.startBreak.bind(this, false));
+    finishPomodora.addEventListener('click', this.startBreak.bind(this, true));
+    startPomodora.addEventListener('click', this.startTimer.bind(this,));
+    finishTask.addEventListener('click', this.finishTask.bind(this, data));
+    addBtn.addEventListener('click', this.addEstimation);
+  }
+
+  /**
+   * render tomatos
+   * @param {object} data
+   * @memberOf TimerView
+   */
+  renderTomatos(data) {
+    const tomatos = document.getElementsByClassName('tomatos__elem');
+    let count = +data.estimation;
+
+    Array.from(tomatos).forEach((elem) => {
+      if (count &lt;= 0) {
+        elem.classList.add('invisible');
+      }
+
+      --count;
+    });
+  }
+
+  /**
+   * adds tomatos to tomatos list
+   * @memberOf TimerView
+   */
+  addEstimation() {
+    const tomatos = document.getElementsByClassName('tomatos__elem'),
+          addBtn  = document.getElementsByClassName('add-new-tomato')[0];
+
+    Array.from(tomatos).some((elem) => {
+      if (elem.classList.contains('invisible')) {
+        elem.classList.remove('invisible');
+
+        return true;
+      }
+    });
+
+    if (!Array.from(tomatos).some((elem) => elem.classList.contains('invisible'))) {
+      addBtn.classList.add('invisible');
+
+      return null;
+    }
+  }
+
+  /**
+   * launches timer
+   * @memberOf TimerView
+   */
+  startTimer() {
+    const addBtn           = document.getElementsByClassName('add-new-tomato')[0],
+          startTimerBtn    = document.getElementsByClassName('start-timer')[0],
+          failPomodora     = document.getElementsByClassName('fail-pomodora')[0],
+          finishPomodora   = document.getElementsByClassName('finish-pomodora')[0],
+          startPomodora    = document.getElementsByClassName('start-pomodora')[0],
+          linkToGlobalTask = document.getElementsByClassName('back-link')[0],
+          timeLine         = document.getElementsByClassName('time-line')[0],
+          phase            = document.getElementsByClassName('phase')[0],
+          finishTask       = document.getElementsByClassName('finish-task')[0],
+          tomatos          = document.getElementsByClassName('tomatos__elem');
+
+    if (!this.timeId) {
+      eventbus.dispatch('changeHeaderForStartedTimer');
+
+      if (Array.from(tomatos).some((elem) => elem.classList.contains('invisible'))) {
+        addBtn.classList.remove('invisible');
+      }
+    }
+
+    startTimerBtn.classList.add('invisible');
+    failPomodora.classList.remove('invisible');
+    finishPomodora.classList.remove('invisible');
+    linkToGlobalTask.classList.add('invisible');
+    startPomodora.classList.add('invisible');
+    timeLine.classList.add('add-padding');
+    finishTask.classList.add('invisible');
+    phase.textContent = '';
+
+    this.resetTimer(this.timeId);
+    this.timeId = this.timer(0);
+  }
+
+  /**
+   * launches break
+   * @param {boolean} result
+   * @memberOf TimerView
+   */
+  startBreak(result) {
+    const addBtn         = document.getElementsByClassName('add-new-tomato')[0],
+          failPomodora   = document.getElementsByClassName('fail-pomodora')[0],
+          finishPomodora = document.getElementsByClassName('finish-pomodora')[0],
+          startPomodora  = document.getElementsByClassName('start-pomodora')[0],
+          visibleTimer   = document.getElementsByClassName('visible-timer')[0],
+          hiddenTimer    = document.getElementsByClassName('hidden-timer')[0],
+          phase          = document.getElementsByClassName('phase')[0],
+          finishTask     = document.getElementsByClassName('finish-task')[0],
+          tomatos        = document.getElementsByClassName('tomatos__elem'),
+          totalIteration = +this.getSS()[1].value;
+
+    if (result) {
+      finishTask.classList.remove('invisible');
+    }
+
+    this.resetTimer(this.timeId);
+    this.changePomodoroStatus(result);
+    this.currentIteration++;
+
+    if(this.currentIteration >= totalIteration) {
+      this.timeId = this.timer(3);
+      this.currentIteration = 0;
+    } else {
+      this.timeId = this.timer(2);
+    }
+
+    phase.textContent = 'break';
+    visibleTimer.classList.add('on-animation-for-vt');
+    hiddenTimer.classList.add('on-animation-for-ht');
+    failPomodora.classList.add('invisible');
+    addBtn.classList.add('invisible');
+    finishPomodora.classList.add('invisible');
+
+    const isEnd = Array.from(tomatos).some((elem) => {
+      if (!elem.classList.contains('invisible') &amp;&amp; elem.firstChild.getAttribute('src') === '/empty-tomato.svg') {
+        return true;
+      }
+    });
+
+    if (isEnd) {
+      startPomodora.classList.remove('invisible');
+    } else {
+      finishTask.classList.remove('invisible');
+      startPomodora.classList.add('invisible');
+    }
+  }
+
+  /**
+   * finishes task
+   * @param {object} data
+   * @memberOf TimerView
+   */
+  finishTask(data) {
+    const startPomodora     = document.getElementsByClassName('start-pomodora')[0],
+          linkToGlobalTask  = document.getElementsByClassName('back-link')[0],
+          linkToReports     = document.getElementsByClassName('next-link')[0],
+          timeLine          = document.getElementsByClassName('timer__message')[0],
+          phase             = document.getElementsByClassName('phase')[0],
+          finishTask        = document.getElementsByClassName('finish-task')[0],
+          currentMin        = document.getElementsByClassName('timer__minutes')[0],
+          hiddenTimer       = document.getElementsByClassName('hidden-timer')[0];
+
+    this.resetTimer(this.timeId);
+    this.timeId = null;
+    eventbus.dispatch('changeHeaderForStartedTimer');
+    this.setIteration.notifyObservers(this.currentIteration);
+
+    finishTask.classList.add('invisible');
+    startPomodora.classList.add('invisible');
+    linkToGlobalTask.classList.remove('invisible');
+    linkToReports.classList.remove('invisible');
+    timeLine.textContent = 'You completed task';
+    phase.textContent = '';
+    currentMin.textContent = '';
+    hiddenTimer.classList.add('completed-timer');
+
+    this.moveTaskToDoneList(data);
+  }
+
+  /**
+   * changes pomodoros status
+   * @param {boolean} result
+   * @memberOf TimerView
+   */
+  changePomodoroStatus(result) {
+    const tomatos = document.getElementsByClassName('tomatos__elem');
+
+    Array.from(tomatos).find(elem => {
+      if (elem.firstChild.getAttribute('src') === '/empty-tomato.svg') {
+        if (result) {
+          elem.firstChild.setAttribute('src', '/fill-tomato.svg');
+        } else {
+          elem.firstChild.setAttribute('src', '/tomato-failed.svg');
+        }
+
+        return true;
+      }
+    });
+  }
+
+  /**
+   * listens animation status changes
+   * @param {event} e
+   * @memberOf TimerView
+   */
+  listener(e) {
+    const timeLine   = document.getElementsByClassName('timer__message')[0],
+          phase      = document.getElementsByClassName('phase')[0],
+          currentMin = document.getElementsByClassName('timer__minutes')[0];
+
+      switch(e.type) {
+        case "animationstart":
+          timeLine.textContent = 'min';
+          break;
+        case "animationend":
+          if (phase.textContent === 'break') {
+            phase.textContent = '';
+            currentMin.textContent = '';
+            timeLine.textContent = 'Break is over';
+          } else {
+            this.startBreak(true);
+          }
+          break;
+      }
+  }
+
+  /**
+   * starts timer animation
+   * @param {number} index
+   * @memberOf TimerView
+   * @return {number} timeId
+   */
+  timer(index) {
+    const visibleTimer = document.getElementsByClassName('visible-timer')[0],
+          hiddenTimer  = document.getElementsByClassName('hidden-timer')[0],
+          currentMin   = document.getElementsByClassName('timer__minutes')[0],
+          seconds      = +this.getSS()[index].value * 60;
+    let   count        = +this.getSS()[index].value;
+
+    currentMin.textContent = count;
+
+    visibleTimer.classList.remove('hidden');
+    hiddenTimer.classList.remove('hidden');
+    visibleTimer.classList.add('on-animation-for-vt');
+    hiddenTimer.classList.add('on-animation-for-ht');
+
+    visibleTimer.style.animationDuration = `${seconds}s`;
+    hiddenTimer.style.animationDuration = `${seconds / 2}s`;
+    hiddenTimer.style.animationDelay = `${seconds / 2}s`;
+
+    const timeId = setInterval(() => {
+      if (count !== 1) {
+        currentMin.textContent = --count;
+      } else {
+        clearTimeout(timeId);
+      }
+    }, 60000);
+
+    return timeId;
+  }
+
+  /**
+   * resets timer animation
+   * @param {number} timeId
+   * @memberOf TimerView
+   */
+  resetTimer(timeId) {
+    const visibleTimer = document.getElementsByClassName('visible-timer')[0],
+      hiddenTimer  = document.getElementsByClassName('hidden-timer')[0];
+
+    clearTimeout(timeId);
+
+    visibleTimer.classList.remove('on-animation-for-vt');
+    hiddenTimer.classList.remove('on-animation-for-ht');
+
+    void visibleTimer.offsetWidth;
+    void hiddenTimer.offsetWidth;
+  }
+
+  /**
+   * moves task to done list
+   * @param {object} data
+   * @memberOf TimerView
+   */
+  moveTaskToDoneList(data) {
+    const tomatos = document.getElementsByClassName('tomatos__elem');
+
+    data.estimationUsed   = 0;
+    data.estimationFailed = 0;
+
+    Array.from(tomatos).forEach(elem => {
+      if (elem.firstChild.getAttribute('src') === '/fill-tomato.svg') {
+        data.estimationUsed++;
+      } else if (elem.firstChild.getAttribute('src') === '/tomato-failed.svg') {
+        data.estimationFailed++;
+      }
+    });
+
+    data.isFailed       =  data.estimationFailed > data.estimationUsed;
+    data.isDone         = true;
+    data.isActive       = false;
+    data.expirationDate = Date.now();
+    data.deadline       = 0;
+
+    eventbus.dispatch('editTask', data);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Event.Event.html">Event</a></li><li><a href="EventBus.EventBus.html">EventBus</a></li><li><a href="Firebase.Firebase.html">Firebase</a></li><li><a href="Header.Header.html">Header</a></li><li><a href="ModalController.ModalController.html">ModalController</a></li><li><a href="ModalView.ModalView.html">ModalView</a></li><li><a href="Notification.Notification.html">Notification</a></li><li><a href="ReportsController.ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.ReportsView.html">ReportsView</a></li><li><a href="Router.Router.html">Router</a></li><li><a href="SettingsController.SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.SettingsView.html">SettingsView</a></li><li><a href="TaskListController.TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.TaskListView.html">TaskListView</a></li><li><a href="TaskModel.TaskModel.html">TaskModel</a></li><li><a href="TimerController.TimerController.html">TimerController</a></li><li><a href="TimerModel.TimerModel.html">TimerModel</a></li><li><a href="TimerView.TimerView.html">TimerView</a></li></ul><h3>Namespaces</h3><ul><li><a href="Event.html">Event</a></li><li><a href="EventBus.html">EventBus</a></li><li><a href="Firebase.html">Firebase</a></li><li><a href="Header.html">Header</a></li><li><a href="ModalController.html">ModalController</a></li><li><a href="ModalView.html">ModalView</a></li><li><a href="Notification.html">Notification</a></li><li><a href="ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.html">ReportsView</a></li><li><a href="Router.html">Router</a></li><li><a href="SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.html">SettingsView</a></li><li><a href="TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.html">TaskListView</a></li><li><a href="TaskModel.html">TaskModel</a></li><li><a href="TimerController.html">TimerController</a></li><li><a href="TimerModel.html">TimerModel</a></li><li><a href="TimerView.html">TimerView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 15 2018 23:31:21 GMT+0200 (FLE Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

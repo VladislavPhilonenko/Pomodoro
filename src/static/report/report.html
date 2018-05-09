@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-list"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics navbar__active"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Report</h1>
+  <section class="report">
+    <ul class="tabs">
+      <li class="tabs__item tabs__active"><a href="#" title="Day">Day</a></li>
+      <li class="tabs__item"><a href="#" title="Week">Week</a></li>
+      <li class="tabs__item"><a href="#" title="Month">Month</a></li>
+    </ul>
+    <div class="schedule">
+      <img src="/schedule.png" alt="schedule">
+      <ul class="priority">
+        <li class="priority__elem">Urgent</li>
+        <li class="priority__elem">High</li>
+        <li class="priority__elem">Middle</li>
+        <li class="priority__elem">Low</li>
+        <li class="priority__elem">Failed</li>
+      </ul>
+      <a class="icon-arrow-left back-link" href="#" title="go to global list"></a>
+    </div>
+    <ul class="tabs">
+      <li class="tabs__item"><a href="#" title="Pomodoros">Pomodoros</a></li>
+      <li class="tabs__item tabs__active"><a href="#" title="Tasks">Tasks</a></li>
+    </ul>
+  </section>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

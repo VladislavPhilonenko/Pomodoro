@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-trash"><a href="#" title="trash bin"></a></li>
+        <li class="navbar__item icon-list navbar__active"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Daily Task List <button class="icon-add" type="button"></button></h1>
+
+  <section class="tasks">
+    <ul class="tabs">
+      <li class="tabs__item"><a href="#" title="To Do">To Do</a></li>
+      <li class="tabs__item tabs__active"><a href="#" title="Done">Done</a></li>
+    </ul>
+    <ul class="tasks__list">
+      <li class="task done task-hobby task-urgent">
+        <div class="date">
+          <h3 class="date__month">today</h3>
+        </div>
+        <div class="description">
+          <h2 class="description__title crossed-out">Lorem ipsum sit amet</h2>
+          <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+        </div>
+        <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+      </li>
+      <li class="task done task-work task-high">
+        <div class="date">
+          <h3 class="date__month">today</h3>
+        </div>
+        <div class="description">
+          <h2 class="description__title crossed-out">Lorem ipsum sit amet</h2>
+          <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+        </div>
+        <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+      </li>
+      <li class="task done task-work task-middle">
+        <div class="date">
+          <h3 class="date__month">today</h3>
+        </div>
+        <div class="description">
+          <h2 class="description__title crossed-out">Lorem ipsum sit amet</h2>
+          <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+        </div>
+        <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+      </li>
+      <li class="task done task-education task-low">
+        <div class="date">
+          <h3 class="date__num">23</h3>
+          <h3 class="date__month">may</h3>
+        </div>
+        <div class="description">
+          <h2 class="description__title crossed-out">Lorem ipsum sit amet</h2>
+          <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+        </div>
+        <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+      </li>
+    </ul>
+    <a  class="link-to-global-tasks" href="#" title="link to Global list">Global list <span class="icon-global-list-arrow-right"></span></a>
+  </section>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

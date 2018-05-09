@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-list"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings navbar__active"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Settings</h1>
+
+  <section class="settings">
+    <h2 class="subtitle">Pomodoros settings</h2>
+    <ul class="tabs">
+      <li class="tabs__item tabs__active"><a href="settings.html" title="settings">Pomodoros</a></li>
+      <li class="tabs__item"><a href="settings_categories.html" title="categories">Categories</a></li>
+    </ul>
+    <ul class="settings__catalog">
+      <li class="controller">
+        <h3 class="controller__title">work time</h3>
+        <div class="controller__switcher">
+          <button class="icon-minus" type="button"></button>
+          <p class="controller__switcher__value">25</p>
+          <button class="icon-add" type="button"></button>
+        </div>
+        <p class="controller__description">Please select a value between 15 and 25 <span class="controller__description_unit">minutes</span></p>
+      </li>
+      <li class="controller">
+        <h3 class="controller__title">work iteration</h3>
+        <div class="controller__switcher">
+          <button class="icon-minus" type="button"></button>
+          <p class="controller__switcher__value">5</p>
+          <button class="icon-add" type="button"></button>
+        </div>
+        <p class="controller__description">Please select a value between 2 and 5 <span class="controller__description_unit">iterations</span></p>
+      </li>
+      <li class="controller">
+        <h3 class="controller__title">short break</h3>
+        <div class="controller__switcher">
+          <button class="icon-minus" type="button"></button>
+          <p class="controller__switcher__value">5</p>
+          <button class="icon-add" type="button"></button>
+        </div>
+        <p class="controller__description">Please select a value between 3 and 5 <span class="controller__description_unit">minutes</span></p>
+      </li>
+      <li class="controller">
+        <h3 class="controller__title">long break</h3>
+        <div class="controller__switcher">
+          <button class="icon-minus" type="button"></button>
+          <p class="controller__switcher__value">30</p>
+          <button class="icon-add" type="button"></button>
+        </div>
+        <p class="controller__description">Please select a value between 15 and 30 <span class="controller__description_unit">minutes</span></p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="cycle">
+    <h2 class="cycle__title">Your cycle</h2>
+    <div class="cycle__header">
+      <p class="start">0m</p>
+      <p class="alltime-iteration">First cycle: 2h 55m</p>
+      <p class="alltime">5h 20m</p>
+    </div>
+    <div class="graph">
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="work"></div>
+      <div class="long-break"></div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="iteration">
+        <div class="work"></div>
+        <div class="break"></div>
+      </div>
+      <div class="work"></div>
+    </div>
+    <div class="timeline">
+      <p class="time-iteration">30m</p>
+      <p class="time-iteration">1h</p>
+      <p class="time-iteration">1h 30m</p>
+      <p class="time-iteration">2h</p>
+      <p class="time-iteration">2h 30m</p>
+      <p class="time-iteration">3h</p>
+      <p class="time-iteration">3h 30m</p>
+      <p class="time-iteration">4h</p>
+      <p class="time-iteration">4h 30m</p>
+      <p class="time-iteration">5h</p>
+    </div>
+  </section>
+
+  <button class="btn btn-primary" type="button">Go to Tasks</button>
+  <button class="btn btn-success" type="button">Save</button>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

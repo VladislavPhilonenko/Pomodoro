@@ -1,0 +1,47 @@
+.notification {
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  z-index: 9999;
+  bottom: 6vh;
+  width: 450px;
+  height: 50px;
+  border: 1px solid #dfe2e5;
+  border-radius: 4px;
+  color: white;
+
+  .emotion {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 19px;
+    border-radius: 4px 0 0 4px;
+    font-size: 1.85em;
+  }
+
+  .description {
+    flex-grow: 1;
+    padding-left: 15px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.93em;
+  }
+
+  .icon-close {
+    margin-right: 17px;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 767px) {
+  .notification {
+    bottom: 30px;
+    right: 50%;
+    z-index: 1010;
+    width: 94.5%;
+    height: 70px;
+    transform: translateX(50%);
+  }
+}

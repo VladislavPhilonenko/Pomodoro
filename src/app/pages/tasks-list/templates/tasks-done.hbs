@@ -1,0 +1,18 @@
+{{#each tasks}}
+  <li class="task done task-{{category}} task-{{priority}}" data-id="{{id}}" data-is-active="{{isActive}}">
+    <div class="delete-elem icon-trash invisible"></div>
+    <div class="date">
+        <h2 class="date__num">{{deadlineDay}}</h2>
+        <h3 class="date__month">{{deadlineMonth}}</h3>
+    </div>
+    <div class="description">
+      <h2 class="description__title crossed-out">{{title}}</h2>
+      <p class="description__subtitle">{{description}}</p>
+    </div>
+    <div class="edit-info">
+      <button class="icon-arrows-up invisible" type="button"></button>
+      <button class="icon-edit invisible" type="button"></button>
+    </div>
+    <div class="priority-shapes icon-check"><span class="priority-shapes_number"></span></div>
+  </li>
+{{/each}}

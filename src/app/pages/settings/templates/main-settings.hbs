@@ -1,0 +1,41 @@
+<h1 class="title">Settings</h1>
+<section class="settings">
+  <ul class="tabs">
+    <li class="tabs__item tabs__active"><a href="#" title="Pomodoros">Pomodoros</a></li>
+    <li class="tabs__item"><a href="#" title="Categories">Categories</a></li>
+  </ul>
+  {{#if this.isSettings}}
+    <h2 class="subtitle">Pomodoros settings</h2>
+    <ul class="settings__catalog">
+      {{#each data}}
+        <li class="controller">
+          <h3 class="controller__title">{{title}}</h3>
+          <div class="controller__switcher">
+            <button class="icon-minus" type="button"></button>
+            <p class="controller__switcher__value">{{value}}</p>
+            <button class="icon-add" type="button"></button>
+          </div>
+          <p class="controller__description">Please select a value between {{min}} and {{max}}
+            <span class="controller__description_unit">{{unit}}</span>
+          </p>
+        </li>
+      {{/each}}
+    </ul>
+    <section class="cycle"></section>
+    <a class="btn btn-primary" href="#task-list" title="got to task list">Go to Tasks</a>
+    <a class="btn btn-success" href="#task-list" title="save settings">Save</a>
+  {{else}}
+    <div class="categories">
+      <h2 class="subtitle">Categories list overview</h2>
+      <ul class="categories__list">
+        <li class="categories__item">Work</li>
+        <li class="categories__item">Education</li>
+        <li class="categories__item">Hobby</li>
+        <li class="categories__item">Sport</li>
+        <li class="categories__item">Other</li>
+      </ul>
+      <a class="btn btn-primary" href="#task-list">Go to Tasks</a>
+    </div>
+  {{/if}}
+</section>
+

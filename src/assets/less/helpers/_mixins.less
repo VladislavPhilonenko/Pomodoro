@@ -1,0 +1,174 @@
+.opacity(@opacity: 0.5) {
+  -webkit-opacity: @opacity;
+  -moz-opacity: @opacity;
+  opacity: @opacity;
+}
+
+.placeholder-color() {
+  &::-webkit-input-placeholder {
+    color:#8da5b8;
+  }
+  &::-moz-placeholder {
+    color:#8da5b8;
+  }
+  &:-moz-placeholder {
+    color:#8da5b8;
+  }
+  &:-ms-input-placeholder {
+    color:#8da5b8;
+  }
+}
+
+.colorsLoop(@colors, @i) when (iscolor(extract(@colors, @i))) and (@i > 0) {
+  .colorsLoop(@colors, (@i - 1));
+  @color: extract(@colors, @i);
+
+  &:nth-child(@{i}):before,
+  &:nth-child(@{i}) .controller__title:before,
+  &:nth-child(@{i}) .priority__elem:before {
+    background-color: @color;
+  }
+}
+
+.btnColors(@names, @colors, @colorsHover, @colorsPressed, @i) when (iscolor(extract(@colors, @i))) and (@i > 0) {
+  .btnColors(@names, @colors, @colorsHover, @colorsPressed, (@i - 1));
+  @name: extract(@names, @i);
+  @color: extract(@colors, @i);
+  @colorHover: extract(@colorsHover, @i);
+  @colorPressed: extract(@colorsPressed, @i);
+
+  .btn-@{name} {
+    background-color: @color;
+
+    &:hover {
+      background-color: @colorHover;
+    }
+
+    &:active {
+      background-color: @colorPressed;
+    }
+  }
+}
+
+.tasks-category-variation(@names, @colors, @colorsActive, @i) when (iscolor(extract(@colors, @i))) and (@i > 0) {
+  .tasks-category-variation(@names, @colors, @colorsActive, (@i - 1));
+
+  @name: extract(@names, @i);
+  @color: extract(@colors, @i);
+  @colorActive: extract(@colorsActive, @i);
+
+  .global-tasks.task-@{name} {
+    &:before {
+      background-color: @color;
+    }
+
+    .caption {
+      color: @color;
+
+      &:before {
+        box-shadow: 0 0 0 4px @color;
+        background-color: @color;
+      }
+
+      &:after {
+        background-color: @color;
+      }
+    }
+  }
+
+  .task-@{name} {
+    .delete-elem {
+      background-color: @color;
+    }
+
+    .active__btn {
+      background-color: @colorActive;
+    }
+
+    &:before {
+      background-color: @color;
+    }
+  }
+
+  .modal .modal__main-content .modal__group .caption-@{name} {
+    &:hover {
+      .change-radiobtn {
+        border: 2px solid @color;
+        background-color: @color;
+        box-shadow: 0 0 0 4px @color;
+      }
+    }
+
+    input[type="radio"] {
+      &:checked + label {
+        box-shadow: 0 0 0 4px @color;
+        background-color: @color;
+      }
+    }
+  }
+
+  .timer-@{name} {
+    border: 6px solid @color;
+  }
+}
+
+.tasks-priority-variation(@names, @colors, @colorsActive, @i) when (iscolor(extract(@colors, @i))) and (@i > 0) {
+  .tasks-priority-variation(@names, @colors, @colorsActive, (@i - 1));
+
+  @name: extract(@names, @i);
+  @color: extract(@colors, @i);
+  @colorActive: extract(@colorsActive, @i);
+
+  .task-@{name} {
+    .description .description__title {
+      color: @color;
+    }
+
+    .priority-shapes {
+      background-color: @color;
+
+      &:hover {
+        background-color: @colorActive;
+      }
+    }
+  }
+
+  .modal .modal__main-content .modal__group .caption-@{name} {
+    &:hover {
+      .change-radiobtn {
+        border: 2px solid @color;
+        background-color: @color;
+        box-shadow: 0 0 0 4px @color;
+      }
+    }
+
+    input[type="radio"] {
+      &:checked + label {
+        box-shadow: 0 0 0 4px @color;
+        background-color: @color;
+      }
+    }
+  }
+}
+
+.notification-variation(@names, @colors, @colorsActive, @i) when (iscolor(extract(@colors, @i))) and (@i > 0) {
+  .notification-variation(@names, @colors, @colorsActive, (@i - 1));
+
+  @name: extract(@names, @i);
+  @color: extract(@colors, @i);
+  @colorActive: extract(@colorsActive, @i);
+
+  .notification-@{name} {
+    background-color: @color;
+  }
+  .icon-tomato-@{name} {
+    background-color: @colorActive;
+  }
+}
+
+.loop() {
+  .tasks-category-variation(@category-names, @categories-colors, @categories-colors-active, 5);
+  .tasks-priority-variation(@priority-names, @priority-colors, @priority-colors-active, 4);
+  .notification-variation(@notification-names, @notification-colors, @notification-colors-active, 4);
+  .btnColors(@btn-names, @btn-colors, @btn-colors-hover, @btn-colors-pressed, 3);
+}

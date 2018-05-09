@@ -1,0 +1,202 @@
+.timer {
+  position: relative;
+	padding: 24px 0;
+
+	.subtitle {
+		font-size: 1.06em;
+		color: white;
+	}
+
+	.tomatos {
+		position: relative;
+    width: 200px;
+		margin: 0 auto;
+		padding: 13px 0;
+
+		.tomatos__elem {
+      display: inline-block;
+      width: 25px;
+			margin: 0 4px;
+
+      .tomatos__picture {
+        width: 100%;
+      }
+		}
+
+		.add-new-tomato {
+			position: absolute;
+			right: -13px;
+			top: 18px;
+			color: #8da5b8;
+			cursor: pointer;
+		}
+	}
+
+	.timer__inner-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 264px;
+    height: 264px;
+    margin: 35px auto 70px;
+    border-radius: 50%;
+    color: white;
+    font: normal normal 1.62em @font-ptsans;
+    box-shadow: 0 0 50px 20px #00000054;
+
+    .time-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      align-content: center;
+      position: relative;
+      width: 237px;
+      height: 237px;
+      padding: 20px 40px;
+      line-height: 1.3;
+
+      .timer__minutes {
+        width: 100%;
+        font: normal normal 3em/.8 @font-roboto-regular;
+      }
+
+      .phase {
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        font: normal normal .6em @font-roboto-regular;
+      }
+
+
+      .hidden-timer {
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        bottom: -1px;
+        right: -1px;
+        z-index: 1003;
+        border: 40px solid @background-color;
+        border-radius: 50%;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+        transform: rotate(-45deg);
+      }
+
+      .visible-timer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1002;
+        border: 36px solid #8da5b8;
+        border-radius: 50%;
+        border-bottom-color: transparent;
+        border-right-color: transparent;
+        transform: rotate(-45deg);
+      }
+
+      .completed-timer {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        border: 36px solid #8da5b8;
+      }
+
+      .on-animation-for-vt {
+        animation: timer-animation linear forwards;
+      }
+
+      .on-animation-for-ht {
+        animation: timer-hidden forwards;
+      }
+
+      @keyframes timer-hidden {
+        0% {
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          border: 36px solid @background-color;
+          border-left-color: transparent;
+          border-top-color: transparent;
+          border-bottom-color: #8da5b8;
+          border-right-color: #8da5b8;
+        }
+        100% {
+          top: 0;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          border: 36px solid @background-color;
+          border-left-color: transparent;
+          border-top-color: transparent;
+          border-bottom-color: #8da5b8;
+          border-right-color: #8da5b8;
+        }
+      }
+
+      @keyframes timer-animation {
+        0% {
+          transform: rotate(-45deg);
+        }
+        100% {
+          transform: rotate(315deg);
+        }
+      }
+    }
+
+    .add-padding {
+      padding: 20px 75px;
+    }
+	}
+
+	.btn {
+	  width: 169px;
+	  padding: 12px 19px;
+	}
+}
+
+//MEDIA
+
+@media (max-width: 1279px) {
+  .timer {
+    .subtitle {
+      padding-top: 14px;
+    }
+
+    .tomatos {
+      padding: 25px 0;
+
+      .add-new-tomato {
+        right: -13px;
+        top: 29px;
+      }
+    }
+
+    .timer__inner-content {
+      margin: 90px auto 240px;
+    }
+
+    .back-link,
+    .next-link {
+      top: 44%;
+      font-size: 2.7em;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .timer {
+    .timer__inner-content {
+      margin: 70px auto 90px;
+    }
+
+    .back-link,
+    .next-link {
+      top: 49%;
+      font-size: 3.5em;
+    }
+  }
+}

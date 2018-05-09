@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/reports/mvc/reports-model.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/reports/mvc/reports-model.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import eventbus   from '../../../eventbus';
+import Event      from '../../../observer';
+import Highcharts from 'highcharts';
+require('highcharts/modules/exporting')(Highcharts);
+
+/**
+ * processes information for rendering charts
+ * @namespace ReportsModel
+ */
+export default class Model {
+  /**
+   * ReportsModel constructor
+   * @constructs ReportsModel
+   * @memberOf ReportsModel
+   */
+  constructor() {
+    eventbus.registerEventHandler('updateChartData', this.updateChartData.bind(this));
+    this.updateData = new Event();
+    this.data       = null;
+  }
+
+  /**
+   * method for updating chart data
+   * @param {object} data
+   * @memberOf ReportsModel
+   */
+  updateChartData(data) {
+    this.data = data;
+    this.updateData.notifyObservers();
+  }
+
+  /**
+   * processes data for rendering daily charts
+   * @param {object} data - chart data
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @param {number} defaultLength - array length
+   * @memberOf ReportsModel
+   * @return {array} returns dailyData or pomodorosData
+   */
+  returnDailyData(data, isPomodoros, defaultLength) {
+    const options     = {day: 'numeric', month: 'long', year: 'numeric'},
+          currentDate = new Date().toLocaleString('en-us', options);
+
+    let pomodorosData = new Array(defaultLength).fill(0);
+    let dailyData     = new Array(defaultLength).fill(0);
+
+    for (let key in data) {
+      const date = new Date(data[key]['expirationDate']).toLocaleString('en-us', options);
+
+      if (data[key]['isDone'] &amp;&amp; !data[key]['isFailed'] &amp;&amp; currentDate  === date) {
+        switch (data[key]['priority']) {
+          case 'urgent':
+            dailyData[0]++;
+            pomodorosData[0] += data[key]['estimationUsed'];
+            break;
+          case 'high':
+            dailyData[1]++;
+            pomodorosData[1] += data[key]['estimationUsed'];
+            break;
+          case 'middle':
+            dailyData[2]++;
+            pomodorosData[2] += data[key]['estimationUsed'];
+            break;
+          case 'low':
+            dailyData[3]++;
+            pomodorosData[3] += data[key]['estimationUsed'];
+            break;
+        }
+
+        pomodorosData[4] += data[key]['estimationFailed'];
+      }
+      if (data[key]['isDone'] &amp;&amp; data[key]['isFailed'] &amp;&amp; currentDate  === date) {
+        pomodorosData[4] += data[key]['estimationFailed'];
+        dailyData[4]++;
+      }
+    }
+
+    if (isPomodoros) dailyData = pomodorosData;
+
+    return dailyData.map((elem, i) => {
+      if(elem) {
+        const num = elem;
+        elem = [0, 0, 0, 0, 0];
+        elem[i] = num;
+      }
+
+      return elem;
+    });
+  }
+
+  /**
+   * processes data for rendering week charts
+   * @param {object} data - chart data
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @param {number} defaultLength - array length
+   * @memberOf ReportsModel
+   * @return {array} returns weekData or pomodorosData
+   */
+  returnWeekData(data, isPomodoros, defaultLength) {
+    const currentDate = new Date(),
+          MSINWEEK    = 86400000 * 7 - 1,
+          currSun     = +new Date(currentDate.getFullYear(), currentDate.getMonth(), (currentDate.getDate() - currentDate.getDay())),
+          currSut     = currSun + MSINWEEK;
+
+    let pomodorosData = new Array(defaultLength).fill(0).map(() => new Array(7).fill(0));
+    let weekData      = new Array(defaultLength).fill(0).map(() => new Array(7).fill(0));
+
+    for (let key in data) {
+      const date    = data[key]['expirationDate'],
+        dataDay = new Date(date).getDay();
+
+      if (data[key]['isDone'] &amp;&amp; !data[key]['isFailed'] &amp;&amp; date >= currSun &amp;&amp; date &lt; currSut) {
+        switch (data[key]['priority']) {
+          case 'urgent':
+            weekData[0][dataDay]++;
+            pomodorosData[0][dataDay] += data[key]['estimationUsed'];
+            break;
+          case 'high':
+            weekData[1][dataDay]++;
+            pomodorosData[1][dataDay] += data[key]['estimationUsed'];
+            break;
+          case 'middle':
+            weekData[2][dataDay]++;
+            pomodorosData[2][dataDay] += data[key]['estimationUsed'];
+            break;
+          case 'low':
+            weekData[3][dataDay]++;
+            pomodorosData[3][dataDay] += data[key]['estimationUsed'];
+            break;
+          default:
+            return null;
+        }
+
+        pomodorosData[4][dataDay] += data[key]['estimationFailed'];
+      }
+      if (data[key]['isDone'] &amp;&amp; data[key]['isFailed'] &amp;&amp; date >= currSun &amp;&amp; date &lt; currSut) {
+        weekData[4][dataDay]++;
+        pomodorosData[4][dataDay] += data[key]['estimationFailed'];
+      }
+    }
+
+    if (isPomodoros) return pomodorosData;
+
+    return weekData;
+  }
+
+  /**
+   * processes data for rendering month charts
+   * @param {object} data - chart data
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @param {number} defaultLength - array length
+   * @param {number} daysInMonth - days in month
+   * @memberOf ReportsModel
+   * @return {array} returns monthData or pomodorosData
+   */
+  returnMonthData(data, isPomodoros, defaultLength, daysInMonth) {
+    const options     = {month: 'long', year: 'numeric'},
+          currentDate = new Date().toLocaleString('en-us', options);
+
+    let monthData     = new Array(defaultLength).fill(0).map(() => new Array(daysInMonth).fill(0));
+    let pomodorosData = new Array(defaultLength).fill(0).map(() => new Array(daysInMonth).fill(0));
+
+    for (let key in data) {
+      const date     = new Date(data[key]['expirationDate']).toLocaleString('en-us', options),
+            taskDate = new Date(data[key]['expirationDate']).getDate();
+
+      if (data[key]['isDone'] &amp;&amp; !data[key]['isFailed'] &amp;&amp; date === currentDate) {
+        switch (data[key]['priority']) {
+          case 'urgent':
+            monthData[0][taskDate - 1]++;
+            pomodorosData[0][taskDate - 1] += data[key]['estimationUsed'];
+            break;
+          case 'high':
+            monthData[1][taskDate - 1]++;
+            pomodorosData[1][taskDate - 1] += data[key]['estimationUsed'];
+            break;
+          case 'middle':
+            monthData[2][taskDate - 1]++;
+            pomodorosData[2][taskDate - 1] += data[key]['estimationUsed'];
+            break;
+          case 'low':
+            monthData[3][taskDate - 1]++;
+            pomodorosData[3][taskDate - 1] += data[key]['estimationUsed'];
+            break;
+          default:
+            return null;
+        }
+
+        pomodorosData[4][taskDate - 1] += data[key]['estimationFailed'];
+      }
+      if (data[key]['isDone'] &amp;&amp; data[key]['isFailed'] &amp;&amp; date === currentDate) {
+        monthData[4][taskDate - 1]++;
+        pomodorosData[4][taskDate - 1] += data[key]['estimationFailed'];
+      }
+    }
+
+    if (isPomodoros) return pomodorosData;
+
+    return monthData;
+  }
+
+  /**
+   * renders daily chart
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @memberOf ReportsModel
+   */
+  renderDailyChart(isPomodoros) {
+    const defaultLength = 5,
+          categories    = ['Urgent', 'High', 'Middle', 'Low', 'Failed'],
+          dailyData     = this.returnDailyData(this.data, isPomodoros, defaultLength);
+
+    this.renderChart(this.setOptions('day', categories, dailyData, isPomodoros));
+  }
+
+  /**
+   * renders week chart
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @memberOf ReportsModel
+   */
+  renderWeekChart(isPomodoros) {
+    const defaultLength = 5,
+          categories = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'],
+          weekData   = this.returnWeekData(this.data, isPomodoros, defaultLength);
+
+    this.renderChart(this.setOptions('week', categories, weekData, isPomodoros));
+  }
+
+  /**
+   * renders month chart
+   * @param {boolean} isPomodoros - get pomodoros or tasks number
+   * @memberOf ReportsModel
+   */
+  renderMonthChart(isPomodoros) {
+    const defaultLength = 5,
+          daysInMonth = this.daysInMonth(new Date()),
+          monthData   = this.returnMonthData(this.data, isPomodoros, defaultLength, daysInMonth),
+          categories  = [];
+
+    for (let i = 1; i &lt;= daysInMonth; i++) {
+      categories.push(i);
+    }
+
+    this.renderChart(this.setOptions('month', categories, monthData, isPomodoros));
+  }
+
+  /**
+   * calculates number of days in a month
+   * @param {string} currentDate - current date
+   * @memberOf ReportsModel
+   * @return {number}
+   */
+  daysInMonth(currentDate) {
+    return 32 - new Date(currentDate.getFullYear(), currentDate.getMonth(), 32).getDate();
+  }
+
+  /**
+   * calculates number of days in a month
+   * @param {string} type - chart type
+   * @param {string} categories - chart categories
+   * @param {string} data - chart data
+   * @param {string} isPomodoros - render pomodoros or tasks tooltips
+   * @memberOf ReportsModel
+   * @return {object} options
+   */
+  setOptions(type, categories, data, isPomodoros) {
+    const options = {
+      colors: ['#f75c4c', '#ffa841', '#fddc43', '#1abc9c', '#8da5b8'],
+
+      chart: {
+        renderTo: 'chart',
+        height: 300,
+        type: 'column',
+        backgroundColor: 'transparent',
+        plotBorderColor: 'white'
+      },
+
+      credits: {
+        text: ''
+      },
+
+      exporting: {
+        enabled: false
+      },
+
+      title: {
+        text: ''
+      },
+
+      legend: {
+        symbolRadius: 0,
+        itemStyle: {
+          color: '#8da5b8',
+          fontWeight: 'normal'
+        },
+        itemHoverStyle: {
+          color: '#82c7e0'
+        },
+        itemMarginTop: 30,
+        itemDistance: 10
+      },
+
+      yAxis: {
+        allowDecimals: false,
+        gridLineColor: '#2d4a60',
+        gridLineWidth: 1,
+        lineWidth: 1.5,
+        min: 0,
+        title: {
+          text: ''
+        },
+        labels: {
+          style: {
+            color: 'white'
+          }
+        }
+      },
+
+      xAxis: {
+        categories: categories,
+        labels: {
+          style: {
+            color: 'white',
+            textTransform: 'uppercase'
+          }
+        },
+        tickWidth: 0,
+        lineWidth: 1.5
+      },
+
+      plotOptions: {
+        column: {
+          stacking: 'normal',
+          borderWidth: 0,
+        }
+      },
+
+      tooltip: {
+        formatter: function() {
+          return this.series.name.toUpperCase() +'&lt;br>' + 'Tasks: ' + this.y;
+        }
+      },
+
+      series: [{
+        name: 'Urgent',
+        data: data[0]
+      }, {
+        name: 'High',
+        data: data[1]
+      }, {
+        name: 'Middle',
+        data: data[2]
+      }, {
+        name: 'Low',
+        data: data[3]
+      }, {
+        name: 'Failed',
+        data: data[4]
+      }]
+    };
+
+    if (isPomodoros) {
+      options.tooltip.formatter = function() {
+          return this.series.name.toUpperCase() + '&lt;br>' + 'Pomodoros: ' + this.y;
+      }
+    }
+
+    if (type === 'week') {
+      options.series.forEach(elem => {
+        elem.stack = 'completed';
+
+        if (elem.name === 'Failed') {
+          elem.stack = 'failed';
+        }
+      });
+    }
+
+    return options;
+  }
+
+  /**
+   * render chart
+   * @param {object} options - chart options
+   * @memberOf ReportsModel
+   */
+  renderChart(options) {
+    new Highcharts.Chart(options);
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Event.Event.html">Event</a></li><li><a href="EventBus.EventBus.html">EventBus</a></li><li><a href="Firebase.Firebase.html">Firebase</a></li><li><a href="Header.Header.html">Header</a></li><li><a href="ModalController.ModalController.html">ModalController</a></li><li><a href="ModalView.ModalView.html">ModalView</a></li><li><a href="Notification.Notification.html">Notification</a></li><li><a href="ReportsController.ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.ReportsView.html">ReportsView</a></li><li><a href="Router.Router.html">Router</a></li><li><a href="SettingsController.SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.SettingsView.html">SettingsView</a></li><li><a href="TaskListController.TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.TaskListView.html">TaskListView</a></li><li><a href="TaskModel.TaskModel.html">TaskModel</a></li><li><a href="TimerController.TimerController.html">TimerController</a></li><li><a href="TimerModel.TimerModel.html">TimerModel</a></li><li><a href="TimerView.TimerView.html">TimerView</a></li></ul><h3>Namespaces</h3><ul><li><a href="Event.html">Event</a></li><li><a href="EventBus.html">EventBus</a></li><li><a href="Firebase.html">Firebase</a></li><li><a href="Header.html">Header</a></li><li><a href="ModalController.html">ModalController</a></li><li><a href="ModalView.html">ModalView</a></li><li><a href="Notification.html">Notification</a></li><li><a href="ReportsController.html">ReportsController</a></li><li><a href="ReportsModel.html">ReportsModel</a></li><li><a href="ReportsView.html">ReportsView</a></li><li><a href="Router.html">Router</a></li><li><a href="SettingsController.html">SettingsController</a></li><li><a href="SettingsModel.html">SettingsModel</a></li><li><a href="SettingsView.html">SettingsView</a></li><li><a href="TaskListController.html">TaskListController</a></li><li><a href="TaskListModel.html">TaskListModel</a></li><li><a href="TaskListView.html">TaskListView</a></li><li><a href="TaskModel.html">TaskModel</a></li><li><a href="TimerController.html">TimerController</a></li><li><a href="TimerModel.html">TimerModel</a></li><li><a href="TimerView.html">TimerView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jan 15 2018 23:31:21 GMT+0200 (FLE Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

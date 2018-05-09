@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-list navbar__active"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Daily Task List <button class="icon-add" type="button"></button></h1>
+  <section class="tasks">
+    <ul class="tabs">
+      <li class="tabs__item tabs__active"><a href="#" title="To Do">To Do</a></li>
+      <li class="tabs__item"><a href="#" title="Done">Done</a></li>
+    </ul>
+    <figure class="first-entrance no-tasks">
+      <a class="first-entrance__link" href="#" title="add new task"><img src="/tomato-addv02.svg" alt="add new task" width="170" height="170"></a>
+      <figcaption class="first-entrance__description">
+        <p class="first-entrance__subtitle">You don't have any tasks left.</p>
+        <p class="first-entrance__subtitle">Add new tasks to stay productive.</p>
+      </figcaption>
+    </figure>
+  </section>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

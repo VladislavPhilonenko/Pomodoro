@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-list"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings navbar__active"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Settings</h1>
+
+  <section class="categories">
+    <h2 class="subtitle">Categories list overview</h2>
+    <ul class="tabs">
+      <li class="tabs__item"><a href="settings.html" title="settings">Pomodoros</a></li>
+      <li class="tabs__item tabs__active"><a href="settings_categories.html" title="categories">Categories</a></li>
+    </ul>
+    <ul class="categories__list">
+      <li class="categories__item">Work</li>
+      <li class="categories__item">Education</li>
+      <li class="categories__item">Hobby</li>
+      <li class="categories__item">Sport</li>
+      <li class="categories__item">Other</li>
+    </ul>
+    <button class="btn btn-primary">Go to Tasks</button>
+  </section>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

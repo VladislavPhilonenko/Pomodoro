@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1 class="logo logo-hidden"><a href="#"><img src="/Logo.svg" alt="logo"></a></h1>
+    <nav class="navbar">
+      <ul class="navbar__list">
+        <li class="navbar__item icon-trash"><a href="#" title="trash bin"></a></li>
+        <li class="navbar__item icon-list navbar__active"><a href="task-list.html" title="task list"></a></li>
+        <li class="navbar__item icon-statistics"><a href="#" title="statistics"></a></li>
+        <li class="navbar__item icon-settings"><a href="settings.html" title="settings"></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <h1 class="title">Daily Task List <button class="icon-add" type="button"></button></h1>
+
+  <section class="tasks">
+    <ul class="tabs">
+      <li class="tabs__item tabs__active"><a href="#" title="To Do">To Do</a></li>
+      <li class="tabs__item"><a href="#" title="Done">Done</a></li>
+    </ul>
+
+    <div class="daily-task-zone">
+      <h2 class="add-task__title">Task added,</h2>
+      <h2 class="add-task__title">drag it to the top 5 in daily task list</h2>
+      <div class="icon-arrow_circle"></div>
+    </div>
+
+    <div class="priority priority_with-link">
+      <a  class="link-to-global-tasks" href="#" title="link to Global list">Global list <span class="icon-global-list-arrow-down"></span></a>
+      <ul class="tabs">
+        <li class="tabs__item tabs__active"><a href="#" title="All">All</a></li>
+        <li class="tabs__item"><a href="#" title="Urgent">Urgent</a></li>
+        <li class="tabs__item"><a href="#" title="Hight">Hight</a></li>
+        <li class="tabs__item"><a href="#" title="Middle">Middle</a></li>
+        <li class="tabs__item"><a href="#" title="Low">Low</a></li>
+      </ul>
+    </div>
+
+    <section class="global-tasks task-work">
+      <div class="caption">
+        <h3 class="caption__title">Work</h3>
+      </div>
+      <ul class="tasks__list">
+        <li class="task task-work task-high">
+          <div class="date">
+            <h2 class="date__num">23</h2>
+            <h3 class="date__month">may</h3>
+          </div>
+          <div class="description">
+            <h2 class="description__title">Lorem ipsum sit amet</h2>
+            <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+          </div>
+          <div class="edit-info">
+            <button class="icon-arrows-up" type="button"></button>
+            <button class="icon-edit" type="button"></button>
+          </div>
+          <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+        </li>
+        <li class="task task-work task-high">
+         <div class="date">
+            <h2 class="date__num">23</h2>
+            <h3 class="date__month">may</h3>
+          </div>
+          <div class="description">
+            <h2 class="description__title">Lorem ipsum sit amet</h2>
+            <p class="description__subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+          </div>
+          <div class="edit-info">
+            <button class="icon-arrows-up" type="button"></button>
+            <button class="icon-edit" type="button"></button>
+          </div>
+          <div class="priority-shapes icon-tomato"><span class="priority-shapes_number">3</span></div>
+        </li>
+      </ul>
+    </section>
+  </section>
+</main>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

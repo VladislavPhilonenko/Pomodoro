@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Productivity app</title>
+</head>
+<body>
+
+<div class="modal">
+  <div class="modal__head">
+    <span class="modal__icons icon-close"></span>
+    <span class="modal__icons icon-check"></span>
+  </div>
+  <h1 class="modal__title">Add Task</h1>
+  <form class="modal__main-content" action="#">
+    <fieldset class="modal__group">
+      <legend class="modal__heading">title</legend>
+      <input class="modal__field" type="text" placeholder="Add title here">
+    </fieldset>
+    <fieldset class="modal__group">
+      <legend class="modal__heading">description</legend>
+      <input class="modal__field" type="text" placeholder="Add description here">
+    </fieldset>
+    <fieldset class="modal__group">
+      <legend class="modal__heading">category</legend>
+
+      <label class="caption caption-work">
+        <input class="modal__choose" id="work" name="category" type="radio">
+        <label class="change-radiobtn" for="work"></label>
+        Work
+      </label>
+
+      <label class="caption caption-education">
+        <input class="modal__choose" id="education" name="category" type="radio">
+        <label class="change-radiobtn" for="education"></label>
+        Education
+      </label>
+
+      <label class="caption caption-hobby">
+        <input class="modal__choose" id="hobby" name="category" type="radio">
+        <label class="change-radiobtn" for="hobby"></label>
+        Hobby
+      </label>
+
+      <label class="caption caption-sport">
+        <input class="modal__choose" id="sport" name="category" type="radio">
+        <label class="change-radiobtn" for="sport"></label>
+        Sport
+      </label>
+
+      <label class="caption caption-other">
+        <input class="modal__choose" id="other" name="category" type="radio">
+        <label class="change-radiobtn" for="other"></label>
+        Other
+      </label>
+
+    </fieldset>
+    <fieldset class="modal__group">
+      <legend class="modal__heading">deadline</legend>
+      <input class="modal__field" type="text" placeholder="May 23, 2016">
+    </fieldset>
+    <fieldset class="modal__group">
+      <legend class="modal__heading">Estimation</legend>
+      <img class="modal__point" src="/fill-tomato.svg" alt="point">
+      <img class="modal__point" src="/fill-tomato.svg" alt="point">
+      <img class="modal__point" src="/fill-tomato.svg" alt="point">
+      <img class="modal__point" src="/empty-tomato.svg" alt="point">
+      <img class="modal__point" src="/empty-tomato.svg" alt="point">
+    </fieldset>
+    <fieldset class="modal__group">
+      <legend class="modal__heading">priority</legend>
+
+      <label class="caption caption-urgent">
+        <input class="modal__choose" id="urgent" name="priority" type="radio">
+        <label class="change-radiobtn" for="urgent"></label>
+        Urgent
+      </label>
+
+      <label class="caption caption-high">
+        <input class="modal__choose" id="high" name="priority" type="radio">
+        <label class="change-radiobtn" for="high"></label>
+        High
+      </label>
+
+      <label class="caption caption-middle">
+        <input class="modal__choose" id="middle" name="priority" type="radio">
+        <label class="change-radiobtn" for="middle"></label>
+        Middle
+      </label>
+
+      <label class="caption caption-low">
+        <input class="modal__choose" id="low" name="priority" type="radio">
+        <label class="change-radiobtn" for="low"></label>
+        Low
+      </label>
+
+    </fieldset>
+  </form>
+</div>
+
+<script src="/bundle.js"></script>
+</body>
+</html>

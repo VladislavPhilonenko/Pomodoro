@@ -1,0 +1,26 @@
+<h1 class="title">Daily Task List<button class="icon-add add-task-btn" type="button" data-tooltip="Add Task"></button></h1>
+<section class="tasks">
+  <div class="select-tabs">
+    <ul class="tabs remove-tabs daily-tabs invisible">
+      <li class="tabs__item select">Select All</li>
+      <li class="tabs__item deselect">Deselect All</li>
+    </ul>
+    <ul class="tabs status-tabs">
+      <li class="tabs__item todo-link">To Do</li>
+      <li class="tabs__item done-link">Done</li>
+    </ul>
+  </div>
+  <figure class="first-entrance empty-tasklist"></figure>
+  <ul class="tasks__list daily-list"></ul>
+  <div class="priority priority_with-link">
+    <button class="link-to-global-tasks" data-tooltip="Go to Global List">Global list<span class="icon-global-list-arrow-right" data-tooltip="Go to Global List"></span></button>
+    <ul class="tabs priority__tabs invisible">
+        <li class="tabs__item tabs__active" data-priority="all">All</li>
+        <li class="tabs__item" data-priority="urgent">Urgent</li>
+        <li class="tabs__item" data-priority="high">High</li>
+        <li class="tabs__item" data-priority="middle">Middle</li>
+        <li class="tabs__item" data-priority="low">Low</li>
+    </ul>
+  </div>
+  <div class="global-list invisible"></div>
+</section>

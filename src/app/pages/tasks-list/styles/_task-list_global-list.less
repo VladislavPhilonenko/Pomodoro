@@ -1,0 +1,42 @@
+.global-tasks {
+	position: relative;
+	margin-top: 57px;
+
+	&:before {
+		content: "";
+    position: absolute;
+    z-index: 1001;
+    width: 9px;
+    height: 100%;
+  }
+
+  .caption {
+    position: absolute;
+    top: -50px;
+    z-index: 1000;
+    padding: 18px 25px;
+    font-size: 0.85em;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 21px;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      border: 2px solid @background-color;
+      border-radius: 50%;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: 31px;
+      left: 0;
+      width: 9px;
+      height: 20px;
+    }
+  }
+}

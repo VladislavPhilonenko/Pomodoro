@@ -1,0 +1,90 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="UTF-8">-->
+    <!--<title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<form action="#">-->
+  <!--<input class="name" type="text">-->
+  <!--<input class="age" type="text">-->
+  <!--<button class="submit" type="button">submit</button>-->
+<!--</form>-->
+
+
+
+<!--<script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>-->
+
+<!--<script>-->
+
+  <!--const btn = document.getElementsByClassName('submit')[0];-->
+
+  <!--var config = {-->
+    <!--apiKey: "AIzaSyCvavhB2E_48W-4xaqoJ0oYM6bUwSzAFo4",-->
+    <!--authDomain: "pomodoros-f6971.firebaseapp.com",-->
+    <!--databaseURL: "https://pomodoros-f6971.firebaseio.com",-->
+    <!--projectId: "pomodoros-f6971",-->
+    <!--storageBucket: "pomodoros-f6971.appspot.com",-->
+    <!--messagingSenderId: "810898783763"-->
+  <!--};-->
+  <!--firebase.initializeApp(config);-->
+
+  <!--var database = firebase.database();-->
+
+  <!--function writeUserData(userId, name, age) {-->
+
+    <!--firebase.database().ref('users/' + userId).set({-->
+      <!--username: name,-->
+      <!--age: age-->
+    <!--});-->
+
+  <!--}-->
+
+  <!--function getData() {-->
+    <!--var starCountRef = firebase.database().ref('users/');-->
+    <!--starCountRef.on('value', function(snapshot) {-->
+      <!--console.log(snapshot.val());-->
+    <!--});-->
+  <!--}-->
+
+  <!--getData();-->
+
+  <!--btn.addEventListener('click', function () {-->
+    <!--const nameUser = document.getElementsByClassName('name')[0].value;-->
+    <!--const ageUser = document.getElementsByClassName('age')[0].value;-->
+    <!--writeUserData(2, nameUser, ageUser);-->
+  <!--});-->
+
+<!--//  function saveData(){-->
+<!--//    usersRef.set({-->
+<!--//      alanisawesome: {-->
+<!--//        date_of_birth: "June 23, 1912",-->
+<!--//        full_name: "Alan Turing"-->
+<!--//      },-->
+<!--//      gracehop: {-->
+<!--//        date_of_birth: "December 9, 1906",-->
+<!--//        full_name: "Grace Hopper"-->
+<!--//      }-->
+<!--//    });-->
+<!--//  }-->
+<!--//-->
+<!--//  function printData(){-->
+<!--//    usersRef.on("value", function(snapshot) {-->
+<!--//      console.log(snapshot.val());-->
+<!--//    }, function (errorObject) {-->
+<!--//      console.log("The read failed: " + errorObject.code);-->
+<!--//    });-->
+<!--//  }-->
+<!--//-->
+<!--//  function printData2(){-->
+<!--//    ref.child("users/gracehop/date_of_birth").on("value", function(snapshot) {-->
+<!--//      console.log(snapshot.val()); // "December 9, 1906"-->
+<!--//    }, function (errorObject) {-->
+<!--//      console.log("The read failed: " + errorObject.code);-->
+<!--//    });-->
+<!--//  }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
